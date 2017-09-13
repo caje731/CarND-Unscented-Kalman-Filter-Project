@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "tools.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -64,6 +65,9 @@ public:
   ///* Augmented state dimension
   int n_aug_;
 
+  ///* Number of sigma points
+  int n_sig_;
+
   ///* Sigma point spreading parameter
   double lambda_;
 
@@ -79,10 +83,15 @@ public:
   virtual ~UKF();
 
   /**
-   * ProcessMeasurement
-   * @param meas_package The latest measurement data of either radar or laser
+   *  Angle normalization to [-Pi, Pi]
    */
-  void ProcessMeasurement(MeasurementPackage meas_package);
+  void NormaliseAngle(double *ang);
+
+  /**
+   * ProcessMeasurement
+   * @param measurement_pack The latest measurement data of either radar or laser
+   */
+  void ProcessMeasurement(MeasurementPackage measurement_pack);
 
   /**
    * Prediction Predicts sigma points, the state, and the state covariance
