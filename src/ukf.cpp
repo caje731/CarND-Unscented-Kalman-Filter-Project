@@ -24,10 +24,10 @@ UKF::UKF() {
   P_ = MatrixXd(5, 5);
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 30;
+  std_a_ = 3;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 30;
+  std_yawdd_ = M_PI/4;
 
   // Laser measurement noise standard deviation position1 in m
   std_laspx_ = 0.15;
@@ -78,11 +78,7 @@ void UKF::NormaliseAngle(double *ang) {
 void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   if (!is_initialized_) {
   // Initial covariance matrix
-    P_ << 1, 0, 0, 0, 0,
-          0, 1, 0, 0, 0,
-          0, 0, 1, 0, 0,
-          0, 0, 0, 1, 0,
-          0, 0, 0, 0, 1;
+    P_ << MatrixXd::Identity(5,5);
     if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
@@ -177,13 +173,13 @@ void UKF::Prediction(double delta_t) {
   // Predict sigma points
   for (int i = 0; i< n_sig_; i++)
   {
-      double p_x = Xsig_aug_(0,i);
-      double p_y = Xsig_aug_(1,i);
-      double v = Xsig_aug_(2,i);
-      double yaw = Xsig_aug_(3,i);
-      double yawd = Xsig_aug_(4,i);
-      double vu_a = Xsig_aug_(5,i);
-      double vu_yawdd = Xsig_aug_(6,i);
+      const double p_x = Xsig_aug_(0,i);
+      const double p_y = Xsig_aug_(1,i);
+      const double v = Xsig_aug_(2,i);
+      const double yaw = Xsig_aug_(3,i);
+      const double yawd = Xsig_aug_(4,i);
+      const double vu_a = Xsig_aug_(5,i);
+      const double vu_yawdd = Xsig_aug_(6,i);
 
       double px_p, py_p;
 
